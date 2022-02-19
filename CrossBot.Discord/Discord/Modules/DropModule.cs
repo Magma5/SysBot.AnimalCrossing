@@ -116,6 +116,15 @@ namespace CrossBot.Discord
                 items = items.Take(MaxRequestCount).ToArray();
             }
 
+            for (int i = 0; i < items.Count; i++)
+            {
+                bool canStack = ItemInfo.TryGetMaxStackCount(items.ElementAt(i), out ushort maxStack);
+                if (canStack && items.ElementAt(i).Count == 0 && maxStack > 1)
+                {
+                    items.ElementAt(i).Count = (ushort)(maxStack - 1);
+                }
+            }
+
             var user = Context.User;
             var mention = Context.User.Mention;
             var requestInfo = new DropRequest(user.Username, user.Id, items)
